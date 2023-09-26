@@ -27,10 +27,45 @@ temperatures %>%
   ggplot(aes(date,y=1)) +
   geom_tile(aes(color=color_temp),size=1) +
   scale_color_distiller(palette="RdYlBu") +
+  scale_y_continuous(expand=expansion(add=c(0,0)) ) +
+  scale_x_date(expand=expansion(add=c(0,0)) ) +
   theme_minimal() +
   theme(axis.text.y = element_blank(),panel.grid = element_blank(),
         legend.position = "none") +
-  labs(y=NULL,x=NULL)
+  labs(y=NULL,x=NULL,
+       title = "Écart à la température moyenne",
+       caption = "Source : Nasa, GISS temp - GLB.Ts+dSST") 
+
+# palette manuelle très détaillée
+library(RColorBrewer)
+zCuts <-
+  seq(-.5, 1.1, length.out = 20)
+
+# myPallette <-
+#   c(rev(brewer.pal(9, "YlOrRd"))
+#     , "white"
+#     , brewer.pal(9, "Blues"))
+
+
+myPallette <-
+  c(rev(brewer.pal(9, "Blues"))
+    , "white"
+    , brewer.pal(9, "YlOrRd") )
+
+temperatures %>%
+  ggplot(aes(date,y=1)) +
+  geom_tile(aes(color= cut(color_temp, zCuts) ),size=1) +
+  #scale_color_distiller(palette="RdYlBu") +
+  scale_color_manual(values = myPallette
+                    , drop = FALSE) +
+  scale_y_continuous(expand=expansion(add=c(0,0)) ) +
+  scale_x_date(expand=expansion(add=c(0,0)) ) +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),panel.grid = element_blank(),
+        legend.position = "none") +
+  labs(y=NULL,x=NULL,
+       title = "Écart à la température moyenne",
+       caption = "Source : Nasa, GISS temp - GLB.Ts+dSST") 
 
 
 
