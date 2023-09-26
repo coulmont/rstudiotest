@@ -24,6 +24,17 @@ temperatures %>%
 
 
 temperatures %>%
+  ggplot(aes(date,y=1)) +
+  geom_tile(aes(color=color_temp),size=1) +
+  scale_color_distiller(palette="RdYlBu") +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),panel.grid = element_blank(),
+        legend.position = "none") +
+  labs(y=NULL,x=NULL)
+
+
+
+temperatures %>%
   mutate(date_group = ymd(paste("2000",month,1))) %>%
   ggplot(aes(date_group, diff_temp, group = Year)) +
   geom_line(aes(color=color_temp)) +
