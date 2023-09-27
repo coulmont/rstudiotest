@@ -23,10 +23,79 @@ temperatures %>%
         panel.grid = element_line(color="#999999"))
 
 
+
+# graphique barres
+
+
+continuous_scale(
+  aesthetics="color",
+  scale_name = "test",
+  palette = scales::gradient_n_pal(scales::brewer_pal(type="div", palette="RdYlBu", direction=1)(9), 
+                           values=NULL, space="Lab")
+)
+
+
+
+
+scale_colour_distiller_9 <- function(..., type = "seq", 
+                                     palette = 1, direction = -1, 
+                                     values = NULL, space = "Lab",
+                                     na.value = "grey50", 
+                                     guide = "colourbar", 
+                                     aesthetics = "colour") {
+  # warn about using a qualitative brewer palette to generate the gradient
+  type <- rlang::arg_match0(type, c("seq", "div", "qual"))
+  if (type == "qual") {
+    cli::cli_warn(c(
+      "Using a discrete colour palette in a continuous scale",
+      "i" = "Consider using {.code type = \"seq\"} or {.code type = \"div\"} instead"
+    ))
+  }
+  continuous_scale(
+    aesthetics,
+    scale_name = "test",
+    palette = scales::gradient_n_pal(scales::brewer_pal(type, palette, direction)(11), values, space),
+    na.value = na.value, guide = guide, ...
+  )
+  # NB: 6-7 colours per palette gives nice gradients; more results in more saturated colours which do not look as good
+  # For diverging scales, you need an odd number to make sure the mid-point is in the center
+}
+
+
+
+scale_fill_distiller_9 <- function(..., type = "seq", 
+                                     palette = 1, direction = -1, 
+                                     values = NULL, space = "Lab",
+                                     na.value = "grey50", 
+                                     guide = "colourbar", 
+                                     aesthetics = "fill") {
+  # warn about using a qualitative brewer palette to generate the gradient
+  type <- rlang::arg_match0(type, c("seq", "div", "qual"))
+  if (type == "qual") {
+    cli::cli_warn(c(
+      "Using a discrete colour palette in a continuous scale",
+      "i" = "Consider using {.code type = \"seq\"} or {.code type = \"div\"} instead"
+    ))
+  }
+  continuous_scale(
+    aesthetics,
+    scale_name = "test",
+    palette = scales::gradient_n_pal(scales::brewer_pal(type, palette, direction)(11), 
+                                     values, space),
+    na.value = na.value, guide = guide, ...
+  )
+  # NB: 6-7 colours per palette gives nice gradients; more results in more saturated colours which do not look as good
+  # For diverging scales, you need an odd number to make sure the mid-point is in the center
+}
+
+
+
 temperatures %>%
   ggplot(aes(date,y=1)) +
-  geom_tile(aes(color=color_temp),size=1) +
-  scale_color_distiller(palette="RdYlBu") +
+  geom_tile(aes(color=color_temp,
+                fill=color_temp),linewidth=1) +
+  scale_colour_distiller_9(palette="RdYlBu") +
+  scale_fill_distiller_9(palette="RdYlBu") +
   scale_y_continuous(expand=expansion(add=c(0,0)) ) +
   scale_x_date(expand=expansion(add=c(0,0)) ) +
   theme_minimal() +
